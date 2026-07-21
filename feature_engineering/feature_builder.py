@@ -1,3 +1,5 @@
+from feature_engineering.pollution_scorer import calculate_scores
+
 def _aqi_category(aqi):
     """Map AQI value to health category label."""
     if aqi is None:
@@ -45,4 +47,12 @@ def build_features(raw_data):
     features["dominant_pollutant"] = aqi_data.get("dominant_pollutant")
     features["aqi_category"] = _aqi_category(aqi_value)
 
+    # Calculate evidence scores
+    features["pollution_scores"] = calculate_scores(features)
+    
+    print("\n===== ENGINEERED FEATURES =====")
+    print(features)
+
     return features
+
+

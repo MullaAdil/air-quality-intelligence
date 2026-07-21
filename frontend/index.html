@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AirSense India — Urban Air Quality Intelligence</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <i class="fa-solid fa-wind"></i>
+          <div>
+            <h1>AirSense India</h1>
+            <p>Urban Air Quality Intelligence</p>
+          </div>
+        </div>
+        <span class="badge">AI-Powered Real-Time Analysis</span>
+      </div>
+    </header>
+
+    <!-- Controls -->
+    <section class="controls">
+      <div class="control-group">
+        <label for="citySelect"><i class="fa-solid fa-location-dot"></i> Select City</label>
+        <select id="citySelect">
+          <option value="">Loading cities...</option>
+        </select>
+      </div>
+      <div class="control-group area-control">
+        <label for="areaSelect"><i class="fa-solid fa-map-pin"></i> Select Area <span id="areaLoading" class="area-loading hidden"><i class="fa-solid fa-spinner fa-spin"></i> Loading</span></label>
+        <select id="areaSelect" disabled>
+          <option value="">Select a city first</option>
+        </select>
+      </div>
+      <button id="analyzeBtn" class="analyze-btn" disabled>
+        <i class="fa-solid fa-magnifying-glass-chart"></i> Analyze
+      </button>
+    </section>
+
+    <!-- Loading -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+      <div class="loading-card">
+        <div class="spinner"></div>
+        <p id="loadingText">Analyzing air quality...</p>
+        <span class="loading-hint">This may take 15–30 seconds</span>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="errorBanner" class="error-banner hidden">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span id="errorText"></span>
+      <button id="dismissError" aria-label="Dismiss"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Dashboard -->
+    <main id="dashboard" class="dashboard hidden">
+      <!-- Row 1: AQI + AI Analysis -->
+      <div class="grid-row">
+        <div class="card aqi-card" id="aqiCard">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-gauge-high"></i> Air Quality Index</h2>
+            <span id="aqiCategory" class="aqi-badge">—</span>
+          </div>
+          <div class="aqi-display">
+            <span id="aqiNumber" class="aqi-number">—</span>
+            <div class="aqi-meta">
+              <p class="location"><i class="fa-solid fa-location-dot"></i> <span id="locationName"></span></p>
+              <p><strong>Dominant:</strong> <span id="dominantPollutant">—</span></p>
+              <p class="station"><i class="fa-solid fa-tower-broadcast"></i> <span id="stationName">—</span></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ai-card gradient-card">
+          <span class="neighborhood-badge"><i class="fa-solid fa-map-pin"></i> Neighborhood Analysis</span>
+          <div class="card-header">
+            <h2><i class="fa-solid fa-brain"></i> AI Analysis</h2>
+            <span id="aqiLevel" class="aqi-badge">—</span>
+          </div>
+          <div class="ai-content">
+            <div class="ai-primary">
+              <span id="sourceIcon" class="source-icon">🌫️</span>
+              <div>
+                <h3 id="primarySource">—</h3>
+                <p>Primary Pollution Source</p>
+              </div>
+              <div class="confidence-ring">
+                <svg viewBox="0 0 100 100">
+                  <circle class="ring-bg" cx="50" cy="50" r="42" />
+                  <circle id="confidenceCircle" class="ring-fill" cx="50" cy="50" r="42" />
+                </svg>
+                <span id="confidenceText" class="confidence-text">—%</span>
+              </div>
+            </div>
+            <div id="secondarySources" class="secondary-badges"></div>
+            <blockquote id="reasoning" class="reasoning">—</blockquote>
+            <div class="forecast-advisory">
+              <i class="fa-solid fa-chart-line"></i>
+              <p id="forecastAdvisory">—</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Pollutants -->
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-flask"></i> Pollutant Levels</h2>
+          <span class="unit-label">μg/m³</span>
+        </div>
+        <div class="pollutant-grid" id="pollutantGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Row 3: Weather, Traffic, Fires -->
+      <div class="grid-row three-col">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-cloud-sun"></i> Weather</h2>
+          </div>
+          <div class="weather-content">
+            <div class="weather-main">
+              <i id="weatherIcon" class="fa-solid fa-cloud"></i>
+              <div>
+                <span id="temperature" class="temp-value">—°C</span>
+                <p id="weatherDesc">—</p>
+              </div>
+            </div>
+            <div class="weather-details">
+              <div class="detail-item">
+                <i class="fa-solid fa-wind"></i>
+                <div>
+                  <span>Wind</span>
+                  <strong id="windSpeed">— km/h</strong>
+                </div>
+                <div id="windArrow" class="wind-arrow" style="transform: rotate(0deg)">
+                  <i class="fa-solid fa-location-arrow"></i>
+                </div>
+                <span id="windDir" class="wind-dir">—</span>
+              </div>
+              <div class="detail-item">
+                <i class="fa-solid fa-droplet"></i>
+                <div>
+                  <span>Humidity</span>
+                  <strong id="humidity">—%</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-car"></i> Traffic</h2>
+          </div>
+          <div class="traffic-content">
+            <div class="speed-compare">
+              <div>
+                <span>Current</span>
+                <strong id="currentSpeed">— km/h</strong>
+              </div>
+              <div>
+                <span>Free Flow</span>
+                <strong id="freeFlowSpeed">— km/h</strong>
+              </div>
+            </div>
+            <div class="congestion-bar-wrap">
+              <div class="congestion-label">
+                <span>Congestion</span>
+                <strong id="congestionPercent">—%</strong>
+              </div>
+              <div class="progress-track">
+                <div id="congestionBar" class="progress-fill"></div>
+              </div>
+            </div>
+            <div id="roadClosure" class="road-closure hidden">
+              <i class="fa-solid fa-triangle-exclamation"></i> Road closure detected
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-fire-flame-curved"></i> Fires & Industry</h2>
+          </div>
+          <div class="fires-content">
+            <div class="stat-row">
+              <div class="stat-item">
+                <span class="stat-icon">🔥</span>
+                <div>
+                  <strong id="firesCount">0</strong>
+                  <span>Fire Hotspots</span>
+                </div>
+              </div>
+              <div class="stat-item">
+                <span class="stat-icon">🏭</span>
+                <div>
+                  <strong id="industriesCount">0</strong>
+                  <span>Nearby Industries</span>
+                </div>
+              </div>
+            </div>
+            <div id="fireWarning" class="fire-warning hidden">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              Active fire hotspots detected nearby — may contribute to air pollution
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4: Government + Citizen Alerts -->
+      <div class="grid-row">
+        <div class="card gov-card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-landmark"></i> Government Actions</h2>
+          </div>
+          <ul id="govActions" class="gov-list"></ul>
+        </div>
+
+        <div class="card alerts-card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-triangle-exclamation"></i> Citizen Alerts</h2>
+          </div>
+          <div class="lang-tabs">
+            <button class="lang-tab active" data-lang="english">English</button>
+            <button class="lang-tab" data-lang="hindi">हिंदी</button>
+            <button class="lang-tab" data-lang="telugu">తెలుగు</button>
+            <button class="lang-tab" data-lang="kannada">ಕನ್ನಡ</button>
+          </div>
+          <div class="alert-content">
+            <span class="alert-icon">⚠️</span>
+            <p id="alertText">—</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="card map-card">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-map-location-dot"></i> City Map</h2>
+          <span id="mapCityLabel">—</span>
+        </div>
+        <div id="map"></div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Data: WAQI • OpenWeatherMap • NASA FIRMS • TomTom • OpenStreetMap</p>
+      <p>AI: OpenRouter GPT-4o-mini</p>
+      <p class="hackathon">ET AI Hackathon 2026</p>
+    </footer>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
