@@ -1,82 +1,9 @@
-'''def calculate_scores(features):
-    """
-    Calculate evidence scores for each pollution source.
-    """
+"""
+Deterministic Pollution Evidence Scorer
 
-    scores = {
-        "Dust": 0,
-        "Traffic": 0,
-        "Industry": 0,
-        "Fire": 0
-    }
-
-    # ------------------------
-    # Extract Evidence
-    # ------------------------
-
-    aqi = features.get("aqi", {})
-
-    pm25 = aqi.get("pm25", 0)
-    pm10 = aqi.get("pm10", 0)
-    no2 = aqi.get("no2", 0)
-    so2 = aqi.get("so2", 0)
-    co = aqi.get("co", 0)
-
-    weather = features.get("weather", {})
-    wind_speed = weather.get("wind_speed", 0)
-    humidity = weather.get("humidity", 0)
-
-    traffic = features.get("traffic", {})
-    congestion = traffic.get("congestion_percent", 0)
-
-    fires = features.get("fires_count", 0)
-
-    industries = features.get("industry_count", 0)
-
-    construction = len(
-        features.get("nearby_sources", {}).get("construction", [])
-    )
-
-    print("\n========== EVIDENCE ==========")
-    print(f"PM2.5: {pm25}")
-    print(f"PM10 : {pm10}")
-    print(f"NO2  : {no2}")
-    print(f"SO2  : {so2}")
-    print(f"CO   : {co}")
-    print(f"Wind : {wind_speed}")
-    print(f"Humidity : {humidity}")
-    print(f"Traffic : {congestion}")
-    print(f"Fire : {fires}")
-    print(f"Industries : {industries}")
-    print(f"Construction : {construction}")
-    # ------------------------
-    # Dust Score
-    # ------------------------
-
-    # High PM10 indicates dust/resuspended particles
-    if pm10 >= 150:
-        scores["Dust"] += 50
-    elif pm10 >= 100:
-        scores["Dust"] += 40
-    elif pm10 >= 75:
-        scores["Dust"] += 25
-
-    # Dry weather favors dust
-    if humidity < 40:
-        scores["Dust"] += 10
-
-    # Construction nearby
-    if construction > 0:
-        scores["Dust"] += 20
-
-    # Wind can lift road dust
-    if 5 <= wind_speed <= 15:
-        scores["Dust"] += 10
-    
-    print("\n========== SCORES ==========")
-    print(scores)
-
-    return scores'''
+This module calculates objective attribution weights across major pollution sources
+(Traffic, Industry, Fire, and Dust) using chemical markers, spatial proximity, and meteorology.
+"""
 
 
 def calculate_scores(features):

@@ -1,5 +1,12 @@
 
 
+"""
+AirSense India — Flask Backend REST API Server
+
+Provides real-time endpoints for cities, areas, health checks, and AI-powered
+urban air quality & geospatial source attribution analysis.
+"""
+
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -7,7 +14,7 @@ from pathlib import Path
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-# Allow imports from project root
+# Add project root directory to Python path for module resolution
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from data_collectors.areas import CITY_AREAS
 from data_collectors.collector_manager import collect_all_data

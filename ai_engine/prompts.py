@@ -55,9 +55,7 @@ REASONING RULES
 
 Base every conclusion ONLY on the supplied data.
 
-Never invent facts.
-
-Never invent facts.
+Never invent facts or hallucinate percentages.
 
 Never exaggerate certainty.
 
