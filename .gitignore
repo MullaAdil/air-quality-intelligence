@@ -19,8 +19,9 @@ Thumbs.db
 .vscode/
 .idea/
 
-# PDF files
+# PDF & generated preview files
 *.pdf
+docs/*.html
 
 # Dependencies
 node_modules/
