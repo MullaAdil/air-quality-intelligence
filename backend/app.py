@@ -191,8 +191,10 @@ def analyze_city():
         ), 500
     
 if __name__ == "__main__":
+    import os
+    port = int(os.getenv("PORT", 5050))
     app.run(
         host="127.0.0.1",
-        port=5000,
+        port=port,
         debug=True,
     )

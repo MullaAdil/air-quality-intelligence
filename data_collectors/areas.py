@@ -7,6 +7,51 @@ CITY_AREAS = {
         "Dwarka": (28.5921, 77.0460),
         "Karol Bagh": (28.6519, 77.1909),
         "Punjabi Bagh": (28.6682, 77.1259),
-        "Okhla": (28.5355, 77.2710)
-    }
+        "Okhla": (28.5355, 77.2710),
+    },
+    "Bengaluru": {
+        "Silk Board Junction": (12.9172, 77.6228),
+        "Peenya Industrial Area": (13.0324, 77.5214),
+        "Whitefield": (12.9698, 77.7500),
+        "Electronic City": (12.8452, 77.6602),
+        "Indiranagar": (12.9784, 77.6408),
+        "Majestic": (12.9767, 77.5713),
+    },
+    "Mumbai": {
+        "BKC (Bandra Kurla Complex)": (19.0657, 72.8683),
+        "Chembur": (19.0622, 72.8978),
+        "Andheri East": (19.1136, 72.8697),
+        "Worli": (19.0176, 72.8172),
+        "Vashi (Navi Mumbai)": (19.0771, 72.9986),
+    },
+    "Chennai": {
+        "Manali Industrial Area": (13.1667, 80.2667),
+        "Guindy": (13.0067, 80.2020),
+        "Velachery": (12.9815, 80.2180),
+        "Central": (13.0827, 80.2707),
+    },
+    "Kolkata": {
+        "Jadavpur": (22.4992, 88.3695),
+        "Salt Lake (Bidhannagar)": (22.5804, 88.4172),
+        "Victoria Memorial Area": (22.5448, 88.3426),
+        "Rabindra Bharati": (22.5855, 88.3610),
+    },
+    "Hyderabad": {
+        "Sanathnagar Industrial Area": (17.4566, 78.4437),
+        "Gachibowli": (17.4401, 78.3489),
+        "Punjagutta": (17.4265, 78.4526),
+        "Charminar": (17.3616, 78.4747),
+    },
+    "Pune": {
+        "Bhosari Industrial Area": (18.6279, 73.8447),
+        "Shivajinagar": (18.5308, 73.8475),
+        "Hadapsar": (18.5089, 73.9260),
+        "Katraj": (18.4575, 73.8588),
+    },
+    "Ahmedabad": {
+        "Vatva Industrial Estate": (22.9567, 72.6322),
+        "Satellite": (23.0300, 72.5178),
+        "Maninagar": (22.9972, 72.6015),
+        "Navrangpura": (23.0371, 72.5521),
+    },
 }

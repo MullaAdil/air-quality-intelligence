@@ -1,5 +1,14 @@
-WAQI_API_KEY = "2a2a2d9f0c90116c3eb22441ec4ef7612bc6aa54"
-OPENWEATHER_API_KEY = "b6269869a233bdee8ba62490e10b9d2f"
-TOMTOM_API_KEY = "UPKwNald3B9DIdppHBW8KqpTaMqSxC26"
-NASA_FIRMS_KEY = "e0d80cf8cffe59bf0e28d34f2656e3c4"
-OPENROUTER_API_KEY = "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"
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file if present
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=env_path)
+
+# API Keys loaded securely from environment variables
+WAQI_API_KEY = os.getenv("WAQI_API_KEY", "")
+OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY", "")
+TOMTOM_API_KEY = os.getenv("TOMTOM_API_KEY", "")
+NASA_FIRMS_KEY = os.getenv("NASA_FIRMS_KEY", "")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")

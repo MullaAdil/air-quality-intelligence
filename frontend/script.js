@@ -1,6 +1,5 @@
 console.log("SCRIPT VERSION:", Date.now());
-
-const API_BASE = "http://localhost:5000";
+let API_BASE = "http://localhost:5050";
 
 // AQI color thresholds
 const AQI_LEVELS = [
@@ -57,7 +56,22 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===== Fetch cities =====
 async function loadCities() {
   try {
-    const data = await fetchJson(`${API_BASE}/api/cities`);
+    let data;
+    try {
+      data = await fetchJson(`${API_BASE}/api/cities`);
+    } catch (err1) {
+      if (API_BASE.includes("5050")) {
+        try {
+          API_BASE = "http://localhost:5000";
+          data = await fetchJson(`${API_BASE}/api/cities`);
+        } catch (err2) {
+          API_BASE = "http://localhost:5050";
+          throw err1;
+        }
+      } else {
+        throw err1;
+      }
+    }
     citySelect.innerHTML = "";
 
     (data.cities || []).forEach((city) => {
