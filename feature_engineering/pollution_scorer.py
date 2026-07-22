@@ -24,28 +24,27 @@ def calculate_scores(features):
     # Extract Evidence
     # ---------------------------------------------------
 
-    aqi = features.get("aqi", {})
+    aqi = features.get("aqi") or {}
 
-    pm25 = aqi.get("pm25", 0)
-    pm10 = aqi.get("pm10", 0)
-    no2 = aqi.get("no2", 0)
-    so2 = aqi.get("so2", 0)
-    co = aqi.get("co", 0)
+    pm25 = aqi.get("pm25") or 0
+    pm10 = aqi.get("pm10") or 0
+    no2 = aqi.get("no2") or 0
+    so2 = aqi.get("so2") or 0
+    co = aqi.get("co") or 0
 
-    weather = features.get("weather", {})
-    wind_speed = weather.get("wind_speed", 0)
-    humidity = weather.get("humidity", 0)
+    weather = features.get("weather") or {}
+    wind_speed = weather.get("wind_speed") or 0
+    humidity = weather.get("humidity") or 0
 
-    traffic = features.get("traffic", {})
-    congestion = traffic.get("congestion_percent", 0)
+    traffic = features.get("traffic") or {}
+    congestion = traffic.get("congestion_percent") or 0
 
-    fires = features.get("fires_count", 0)
+    fires = features.get("fires_count") or 0
 
-    industries = features.get("industry_count", 0)
+    industries = features.get("industry_count") or 0
 
-    construction = len(
-        features.get("nearby_sources", {}).get("construction", [])
-    )
+    nearby_sources = features.get("nearby_sources") or {}
+    construction = len(nearby_sources.get("construction") or [])
 
     print("\n========== EVIDENCE ==========")
     print(f"PM2.5        : {pm25}")

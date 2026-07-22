@@ -34,7 +34,7 @@ def build_features(raw_data):
 
     nearest_fire_km = None
     if fires:
-        nearest_fire_km = min(f.get("distance_km", 9999) for f in fires)
+        nearest_fire_km = min((f.get("distance_km") or 9999) for f in fires)
 
     features["is_high_aqi"] = aqi_value is not None and aqi_value > 150
     features["wind_is_low"] = wind_speed is not None and wind_speed < 5
